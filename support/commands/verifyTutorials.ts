@@ -9,7 +9,7 @@ interface TutorialHashes {
 	[key: string]: string;
 }
 
-export default async function verifyTutorials(tutorialRoot: string, updateHashes: boolean = false) {
+export default async function verifyTutorials(tutorialRoot: string, projectExportDirectory: string, updateHashes: boolean = false) {
 	const tutorialDirectories = readdirSync(tutorialRoot).filter(function (file) {
 		const stat = statSync(join(tutorialRoot, file));
 		return stat.isDirectory();
@@ -33,11 +33,12 @@ export default async function verifyTutorials(tutorialRoot: string, updateHashes
 					if (await hasChanged(exampleDirectory, tutorialHashes)) {
 						logger.info('...change detected, updating...');
 						installDeps(exampleDirectory);
-						if (directory === 'finished') {
-							testTutorial(exampleDirectory);
+						let isSuccessful = exportProject(exampleDirectory, projectExportDirectory, `${tutorialName}_${directory}`);
+						if (directory === 'finished' && isSuccessful) {
+							isSuccessful = testTutorial(exampleDirectory);
 						}
 						cleanup(exampleDirectory);
-						if (updateHashes) {
+						if (updateHashes && isSuccessful) {
 							tutorialHashes[exampleDirectory] = getTutorialSignature(exampleDirectory);
 							await new Promise((resolve, reject) => {
 								const file = createWriteStream(tutorialHashPath);
@@ -104,6 +105,34 @@ export function installDeps(exampleDirectory: string) {
 				cwd: projectDirectory
 			});
 			result = true;
+
+		} catch (e) {
+			result = false;
+			break;
+		}
+	}
+
+	return result;
+}
+
+export function exportProject(exampleDirectory: string, projectExportDirectory: string, baseProjectName: string) {
+	let result: boolean;
+	for (const subdir of readdirSync(exampleDirectory)) {
+		const projectDirectory = join(exampleDirectory, subdir);
+		if (!statSync(projectDirectory).isDirectory()) {
+			continue;
+		}
+
+		try {
+			execSync('npm i @dojo/cli-export-project', {
+				cwd: projectDirectory
+			});
+			execSync('dojo export', {
+				cwd: projectDirectory
+			});
+
+			const moveCommand = platform() === 'win32' ? 'move' : 'mv';
+			execSync(`${moveCommand} ${join(projectDirectory, subdir + '.project.json')} ${join(projectExportDirectory, baseProjectName + '.project.json')}`);
 
 		} catch (e) {
 			result = false;

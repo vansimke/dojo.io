@@ -17,13 +17,14 @@ export = function (grunt: IGrunt) {
 	}
 
 	function verifyTutorialsTask(this: IMultiTask<any>) {
-		const { updateHashes } = this.options({
-			updateHashes: true
+		const { updateHashes, projectExportDirectory } = this.options({
+			updateHashes: true,
+			projectExportDirectory: './demo_projects'
 		});
 		return Promise.all(this.files.map((file) => {
 			const { src } = file;
 			return Promise.all(src.map((s) => {
-				return verifyTutorials(s, updateHashes);
+				return verifyTutorials(s, projectExportDirectory, updateHashes);
 			}));
 		}));
 	}
