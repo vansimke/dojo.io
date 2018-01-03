@@ -18,11 +18,11 @@ export = function (grunt: IGrunt) {
 
 	grunt.initConfig(config);
 
-	grunt.registerTask('default', [ 'hexoClean', 'clean', 'sync', 'hexo' ]);
+	grunt.registerTask('default', [ 'hexoClean', 'clean', 'sync', 'hexo', 'copy:demoProjects' ]);
 	grunt.registerTask('generate', [ 'hexo' ]);
 	grunt.registerTask('test', [ 'clean:compiledFiles', 'tslint', 'shell:build-ts', 'intern' ]);
 	grunt.registerTask('init', [ 'prompt:github', 'initAutomation' ]);
-	grunt.registerTask('ci', [ 'prebuild', 'default', 'archiveTutorials', 'verifyTutorials:ci' ]);
+	grunt.registerTask('ci', [ 'prebuild', 'default', 'archiveTutorials', 'verifyTutorials:ci', 'copy:demoProjects' ]);
 	grunt.registerTask('precommit', [ 'verifyTutorials:precommit' ]);
 
 };

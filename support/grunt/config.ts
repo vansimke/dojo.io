@@ -153,3 +153,14 @@ export const webserv: WebServerConfig = {
 		middleware
 	}
 };
+
+export const copy = {
+	demoProjects: {
+		files: [
+			{
+				src: 'demo_projects/*',
+				dest: '_dist/tutorials/assets/'
+			}
+		]
+	}
+};
