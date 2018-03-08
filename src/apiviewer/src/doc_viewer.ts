@@ -198,8 +198,8 @@ function showPage(type: DocType, name: string, section?: string) {
 		// also involves scroll manipulation, and if the viewer is using a
 		// mobile layout, we want the content scroll to take priority over the
 		// menu scroll.
-		highlightActivePage();
-		highlightActiveSection();
+		// highlightActivePage();
+		// highlightActiveSection();
 
 		// Showing the page will probably scroll the content area, but we don't
 		// want to invoke the normal scroll handling code in this case.
@@ -233,6 +233,7 @@ function getPage(docSet: DocSet, type: DocType, name?: string) {
 /**
  * Highlight the active page in the sidebar menu
  */
+/*
 function highlightActivePage() {
 	place(queryExpected('.docs-menu .menu .menu-list'), (menu) => {
 		const active = menu.querySelector('.is-active-page');
@@ -249,10 +250,11 @@ function highlightActivePage() {
 		}
 	});
 }
-
+*/
 /**
  * Highlight the active element in the sidebar menu
  */
+/*
 function highlightActiveSection() {
 	place(queryExpected('.page-content .menu'), (menu) => {
 		const { project, version, type } = parseHash();
@@ -274,7 +276,7 @@ function highlightActiveSection() {
 		}
 	});
 }
-
+*/
 /**
  * Install the current docset's docs menu in the menu container
  */
@@ -296,7 +298,7 @@ function showMenu(type?: DocType) {
  * Process the current URL hash value.
  */
 function processHash() {
-	highlightActiveSection();
+	// highlightActiveSection();
 
 	try {
 		const docSetId = getCurrentDocSetId();
@@ -448,6 +450,7 @@ function hideMessage() {
  *
  * TODO update the correctly scroll into view when item is off page but still in container
  */
+/*
 function scrollIntoViewIfNessary(element: HTMLElement, container: HTMLElement) {
 	const viewportTop = container.offsetTop + container.scrollTop;
 	const viewportBottom = viewportTop + container.clientHeight;
@@ -459,7 +462,7 @@ function scrollIntoViewIfNessary(element: HTMLElement, container: HTMLElement) {
 		element.scrollIntoView(false);
 	}
 }
-
+*/
 /**
  * Update the location hash based on the currently visible doc contents.
  */
@@ -483,12 +486,12 @@ function updateHashFromContent() {
 	const { headings } = scrollState;
 
 	let above: Element | undefined;
-	let below: Element | undefined;
+	// let below: Element | undefined;
 	for (let i = 1; i < headings.length; i++) {
 		const heading = <HTMLElement> headings[i];
 		const headingTop = getOffsetTop(heading);
 		if (headingTop > viewportTop) {
-			below = headings[i];
+			// below = headings[i];
 			above = headings[i - 1];
 			break;
 		}
@@ -509,7 +512,7 @@ function updateHashFromContent() {
 		HashEvent.scroll
 	);
 
-	highlightActiveSection();
+	// highlightActiveSection();
 
 	function getOffsetTop(element: HTMLElement) {
 		let top = element.offsetTop;

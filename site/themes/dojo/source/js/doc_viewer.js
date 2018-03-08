@@ -708,8 +708,6 @@ function showPage(type, name, section) {
             content.removeChild(content.children[0]);
         }
         content.appendChild(page.element);
-        highlightActivePage();
-        highlightActiveSection();
         ignoreScroll = true;
         if (section) {
             var header = document.querySelector("#" + section);
@@ -731,36 +729,6 @@ function getPage(docSet, type, name) {
         ? docSet.apiCache[name]
         : docSet.pageCache[name];
 }
-function highlightActivePage() {
-    dom_1.place(dom_1.queryExpected('.docs-menu .menu .menu-list'), function (menu) {
-        var active = menu.querySelector('.is-active-page');
-        if (active) {
-            active.classList.remove('is-active-page');
-        }
-        var pageId = docs_1.getCurrentPageId(false);
-        var currentPage = hash_1.createHash(pageId);
-        var pageLink = menu.querySelector("li > a[href=\"" + currentPage + "\"]");
-        if (pageLink) {
-            pageLink.parentElement.classList.add('is-active-page');
-        }
-    });
-}
-function highlightActiveSection() {
-    dom_1.place(dom_1.queryExpected('.page-content .menu'), function (menu) {
-        var _a = hash_1.parseHash(), project = _a.project, version = _a.version, type = _a.type;
-        var hashBase = "#" + project + "/" + version + "/" + type;
-        var currentRef = location.pathname + hashBase;
-        var active = menu.querySelector('.is-active');
-        if (active) {
-            active.classList.remove('is-active');
-        }
-        var link = menu.querySelector("li > a[href=\"" + currentRef + "\"]");
-        if (link) {
-            link.classList.add('is-active');
-            scrollIntoViewIfNessary(link, menu);
-        }
-    });
-}
 function showMenu(type) {
     type = type || docs_1.DocType.docs;
     var docSet = docs_1.getDocSet(docs_1.getCurrentDocSetId());
@@ -775,7 +743,6 @@ function showMenu(type) {
     });
 }
 function processHash() {
-    highlightActiveSection();
     try {
         var docSetId_1 = docs_1.getCurrentDocSetId();
         loadDocSet(docSetId_1)
@@ -881,18 +848,6 @@ function hideMessage() {
         messageModal.classList.remove('is-active');
     });
 }
-function scrollIntoViewIfNessary(element, container) {
-    var viewportTop = container.offsetTop + container.scrollTop;
-    var viewportBottom = viewportTop + container.clientHeight;
-    var elementTop = element.offsetTop;
-    var elementBottom = elementTop + element.offsetHeight;
-    if (elementTop < viewportTop) {
-        element.scrollIntoView(true);
-    }
-    else if (elementBottom > viewportBottom) {
-        element.scrollIntoView(false);
-    }
-}
 function updateHashFromContent() {
     var pageId = docs_1.getCurrentPageId(false);
     var pageHash = hash_1.createHash(pageId);
@@ -910,12 +865,10 @@ function updateHashFromContent() {
     var viewportTop = content.offsetTop + content.scrollTop;
     var headings = scrollState.headings;
     var above;
-    var below;
     for (var i = 1; i < headings.length; i++) {
         var heading = headings[i];
         var headingTop = getOffsetTop(heading);
         if (headingTop > viewportTop) {
-            below = headings[i];
             above = headings[i - 1];
             break;
         }
@@ -930,7 +883,6 @@ function updateHashFromContent() {
         page: pageId.page,
         section: above.id
     }, hash_1.HashEvent.scroll);
-    highlightActiveSection();
     function getOffsetTop(element) {
         var top = element.offsetTop;
         while ((element = element.offsetParent) &&
