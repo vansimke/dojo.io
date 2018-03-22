@@ -1,15 +1,16 @@
 <%- partial('_partial/docs/nav', { active: 'api' }) %>
 <%- partial('_partial/docs/table-of-contents', { src: "api" }) %>
-<section class="section">
-	<div class="container">
+<section class="section page-docs">
+	<div class="container docs-layout">
 		<div class="columns">
 			<div class="column is-9 article">
 				<%- page.content %>
 				<div class="content">
-					<div class="docs-content"></div>
+					<div class="docs-content viewer"></div>
 				</div>
 			</div>
 		</div>
 	</div>
 </section>
+<%- partial('_partial/docs/modal') %>
 <%- partial('_partial/docs/docviewer') %>

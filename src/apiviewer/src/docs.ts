@@ -129,7 +129,6 @@ export function getCurrentDocSetId() {
 	if (!projectDocs.versions[realVersion]) {
 		throw new Error(`Invalid version: ${version}`);
 	}
-
 	return { project, version: realVersion };
 }
 

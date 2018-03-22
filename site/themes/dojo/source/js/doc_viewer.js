@@ -592,8 +592,6 @@ var viewer;
 var content;
 var messageModal;
 var ignoreScroll = false;
-var scrollState = Object.create(null);
-var menuHighlightDelay = 20;
 window.addEventListener('hashchange', processHash);
 if (!location.hash) {
     hash_1.updateHash(tslib_1.__assign({}, docs_1.getDefaultDocSetId(), { type: docs_1.DocType.docs }));
@@ -617,10 +615,6 @@ ready.then(function () {
             if (menuTimer) {
                 clearTimeout(menuTimer);
             }
-            menuTimer = setTimeout(function () {
-                menuTimer = undefined;
-                updateHashFromContent();
-            }, menuHighlightDelay);
         });
     });
     processHash();
@@ -729,19 +723,6 @@ function getPage(docSet, type, name) {
         ? docSet.apiCache[name]
         : docSet.pageCache[name];
 }
-function showMenu(type) {
-    type = type || docs_1.DocType.docs;
-    var docSet = docs_1.getDocSet(docs_1.getCurrentDocSetId());
-    var menu = dom_1.queryExpected('.docs-menu .menu');
-    dom_1.place(menu, function (menu) {
-        var menuList = menu.querySelector('.menu-list');
-        if (menuList) {
-            menu.removeChild(menuList);
-        }
-        var docMenu = type === docs_1.DocType.api ? docSet.apiMenu : docSet.menu;
-        menu.appendChild(docMenu);
-    });
-}
 function processHash() {
     try {
         var docSetId_1 = docs_1.getCurrentDocSetId();
@@ -767,7 +748,6 @@ function processHash() {
                 else {
                     console.warn('missing .docs-content');
                 }
-                showMenu(type);
                 showPage(type, page, section);
                 hideMessage();
             })
@@ -809,7 +789,7 @@ function processHash() {
         }
     }
     function showError(error, newHash) {
-        console.error(error);
+        console.error(error, error.stack);
         showMessage('Oops...', h('span', {}, [
             'The URL hash ',
             h('code', {}, location.hash),
@@ -847,50 +827,6 @@ function hideMessage() {
     dom_1.place(messageModal, function (messageModal) {
         messageModal.classList.remove('is-active');
     });
-}
-function updateHashFromContent() {
-    var pageId = docs_1.getCurrentPageId(false);
-    var pageHash = hash_1.createHash(pageId);
-    if (pageHash !== scrollState.pageHash) {
-        var content_1 = document.querySelector('.docs-content');
-        var menu = document.querySelector('.docs-menu .menu-list');
-        var depth = menu.menuDepth || 3;
-        var tags = [];
-        for (var i = 1; i < depth; i++) {
-            tags.push("h" + (i + 1));
-        }
-        scrollState.pageHash = pageHash;
-        scrollState.headings = content_1.querySelectorAll(tags.join(','));
-    }
-    var viewportTop = content.offsetTop + content.scrollTop;
-    var headings = scrollState.headings;
-    var above;
-    for (var i = 1; i < headings.length; i++) {
-        var heading = headings[i];
-        var headingTop = getOffsetTop(heading);
-        if (headingTop > viewportTop) {
-            above = headings[i - 1];
-            break;
-        }
-    }
-    if (!above) {
-        above = headings[headings.length - 1];
-    }
-    hash_1.updateHash({
-        project: pageId.project,
-        version: pageId.version,
-        type: viewer.getAttribute('data-doc-type'),
-        page: pageId.page,
-        section: above.id
-    }, hash_1.HashEvent.scroll);
-    function getOffsetTop(element) {
-        var top = element.offsetTop;
-        while ((element = element.offsetParent) &&
-            element !== content) {
-            top += element.offsetTop;
-        }
-        return top;
-    }
 }
 
 

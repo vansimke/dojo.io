@@ -23,7 +23,7 @@ import {
 import { renderApiPages } from './renderer/api';
 import { renderMenu, renderDocPage } from './renderer/markdown';
 import { createHash, parseHash, updateHash, HashEvent } from './hash';
-import {place, queryExpected} from './dom';
+import { place, queryExpected } from './dom';
 
 const global = <any> window;
 if (!global.Promise) {
@@ -34,13 +34,14 @@ let viewer: HTMLElement;
 let content: HTMLElement;
 let messageModal: HTMLElement;
 let ignoreScroll = false;
+/*
 let scrollState: {
 	pageHash: string;
 	headings: NodeListOf<Element>;
 } = Object.create(null);
 
 const menuHighlightDelay = 20;
-
+*/
 // Super simple router. The location hash fully controls the state of the
 // doc viewer. Changes to the project and version selectors will update the
 // hash, which will cause new content to be rendered.
@@ -76,10 +77,12 @@ ready.then(() => {
 			if (menuTimer) {
 				clearTimeout(menuTimer);
 			}
+			/*
 			menuTimer = <any> setTimeout(() => {
 				menuTimer = undefined;
 				updateHashFromContent();
 			}, menuHighlightDelay);
+			*/
 		});
 	});
 
@@ -280,6 +283,7 @@ function highlightActiveSection() {
 /**
  * Install the current docset's docs menu in the menu container
  */
+/*
 function showMenu(type?: DocType) {
 	type = type || DocType.docs;
 	const docSet = getDocSet(getCurrentDocSetId());
@@ -293,6 +297,7 @@ function showMenu(type?: DocType) {
 		menu.appendChild(docMenu);
 	});
 }
+*/
 
 /**
  * Process the current URL hash value.
@@ -306,7 +311,7 @@ function processHash() {
 			.then(docSet => {
 				const { type } = parseHash();
 				const ready =
-					type === DocType.api ? docSet.apiReady! : docSet.ready!;
+					type === DocType.api ? docSet.apiReady : docSet.ready;
 				ready
 					.then(() => {
 						const pageId = getCurrentPageId();
@@ -334,7 +339,7 @@ function processHash() {
 							console.warn('missing .docs-content');
 						}
 
-						showMenu(type);
+						// showMenu(type);
 						showPage(type, page, section);
 						hideMessage();
 					})
@@ -392,7 +397,7 @@ function processHash() {
 	}
 
 	function showError(error: Error, newHash?: string) {
-		console.error(error);
+		console.error(error, error.stack);
 		showMessage(
 			'Oops...',
 			h('span', {}, [
@@ -466,7 +471,7 @@ function scrollIntoViewIfNessary(element: HTMLElement, container: HTMLElement) {
 /**
  * Update the location hash based on the currently visible doc contents.
  */
-function updateHashFromContent() {
+/*function updateHashFromContent() {
 	const pageId = getCurrentPageId(false);
 	const pageHash = createHash(pageId);
 
@@ -525,3 +530,4 @@ function updateHashFromContent() {
 		return top;
 	}
 }
+*/

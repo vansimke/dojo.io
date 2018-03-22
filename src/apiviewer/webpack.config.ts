@@ -36,7 +36,7 @@ const config: Configuration = {
 };
 
 if (process.env.NODE_ENV === 'production') {
-	config.plugins = [new optimize.UglifyJsPlugin()];
+	// config.plugins = [new optimize.UglifyJsPlugin()];
 }
 
 // CommonsChunk needs to come after UglifyJs to prevent the chunks from being
